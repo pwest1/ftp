@@ -1,8 +1,17 @@
 # Server code
 from socket import *
+import sys #sys module for accessing cl arguments
 
+if len(sys.argv) != 2:
+    print("Error Invalid argument length")
+    sys.exit(1)
 # The port on which to listen
-serverPort = 12000
+#extract port number from comand-line arguments
+try:
+    serverPort = int(sys.argv[1])
+except ValueError:
+    print("Port number must be an integer")
+    sys.exit(1)
 
 # Create a TCP socket
 serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -22,7 +31,7 @@ while True:
 
     # The temporary buffer
     tmpBuff = ""
-
+    data = ""
     while len(data) != 40:
         # Receive whatever the newly connected client has to send
         tmpBuff = connectionSocket.recv(40)
@@ -32,7 +41,7 @@ while True:
             break
 
         # Save the data
-        data += tmpBuff
+        data += tmpBuff.decode()
 
     print(data)
 
