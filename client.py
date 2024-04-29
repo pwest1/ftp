@@ -1,11 +1,49 @@
-# Client code
+#----------------------- Client code----------------------
 from socket import *
 import sys
+import cmd
+import os
 
-if len(sys.argv) != 2:
+class FTP(cmd.Cmd):
+    #function to put file in server
+    def do_put(self, args):
+        print(len(args))
+        if len(args) == 1:
+            command = "put"
+            clientSocket.send(command.encode())
+
+
+        else:
+            print("Invalid command length")
+
+    #functn to retrieve a file from the server
+    def do_get(self, args):
+        if len(args) == 1:
+            command = "get"
+            clientSocket.send(command.encode())
+
+        else:
+            print("Invalid command length")
+
+    def do_ls(self, args):
+        if not len(args) == 0:
+            print('ls command does not take any arguments')
+        else:
+            command = "ls"
+            clientSocket.send(command.encode())
+    def do_quit(self, args):
+        data = "quit"
+        clientSocket.send(data.encode())
+        clientSocket.close()
+        print("Connection Closed.")
+        return True
+
+
+if len(sys.argv) != 3:
     print("Error Invalid argument length")
     sys.exit(1)
 # The port on which to listen
+
 #extract port number from comand-line arguments
 try:
     serverName = sys.argv[1]
@@ -21,16 +59,14 @@ clientSocket = socket(AF_INET, SOCK_STREAM)
 
 # Connect to the server
 clientSocket.connect((serverName, serverPort))
+# connection established message
+print("Connection Established with server")
 
-# A string we want to send to the server
-data = "Hello world! This is a very long string."
+#create instance of FTP command interpreter
+ftp_cli = FTP()
+ftp_cli.prompt = 'ftp> '
 
-bytesSent = 0
-
-# Keep sending bytes until all bytes are sent
-while bytesSent != len(data):
-    # Send that string!
-    bytesSent += clientSocket.send(data.encode())
+ftp_cli.cmdloop('FTP Connection established')
 
 # Close the socket
 clientSocket.close()
