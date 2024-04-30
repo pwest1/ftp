@@ -5,13 +5,13 @@ import os
 
 def recvAll(sock, numBytes):
     # The buffer
-    recvBuff = ""
+    recvBuff = b""
     # The temporary buffer
     tmpBuff = ""
     # Keep receiving till all is received
     while len(recvBuff) < numBytes:
         # Attempt to receive bytes
-        tmpBuff = sock.recv(numBytes).decode()
+        tmpBuff = sock.recv(numBytes - len(recvBuff))
         # The other side has closed the socket
         if not tmpBuff:
             break
@@ -28,7 +28,7 @@ def send_file_data(data_socket, filename="NA"):
     # Keep sending until all is sent
     while True:
         # Read 65536 bytes of data
-        file_data = file_obj.read(65536)
+        file_data = file_obj.read()
         # Make sure we did not hit EOF
         if file_data:
             # Get the size of the data read
@@ -40,7 +40,7 @@ def send_file_data(data_socket, filename="NA"):
                 data_size_str = "0" + data_size_str
             # Prepend the size of the data to the
             # file data.
-            file_data = (data_size_str + file_data.decode()).encode()
+            file_data = (data_size_str.encode() + file_data)
             # The number of bytes sent
             num_sent = 0
             # Send the data!
@@ -75,11 +75,11 @@ def rec_file_data(data_socket, filename="NA", save=True):
     if save:
         # Save the file to the current directory with the specified filename
         with open(filename, "wb") as file:
-            file.write(fileData.encode())
+            file.write(fileData)
     else:
         # Print the file data
         print("Directory: ")
-        print(fileData)
+        print(fileData.decode())
 
     # Close our side
     data_socket.close()
