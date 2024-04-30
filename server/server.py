@@ -58,7 +58,7 @@ def handle_client_connection(connectionSocket):
 
 # -------------main server code ------------------------------
 if len(sys.argv) != 2:
-    print("Error Invalid argument length")
+    print("Please provide the correct format: server.py <Port_Number>")
     sys.exit(1)
 if not sys.argv[1].isdigit():
     print("Port number must be an integer")

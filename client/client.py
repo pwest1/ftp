@@ -28,7 +28,7 @@ class FTP(cmd.Cmd):
 
 
         else:
-            print("Invalid command length")
+            print("Put command requires file argument")
 
     # functn to retrieve a file from the server
     def do_get(self, args):
@@ -41,7 +41,7 @@ class FTP(cmd.Cmd):
             rec_file_data(data_socket, filename)
 
         else:
-            print("Invalid command length")
+            print("Get Command requires file argument")
 
     def do_ls(self, args):
         if not len(args) == 0:
@@ -61,7 +61,7 @@ class FTP(cmd.Cmd):
 
 
 if len(sys.argv) != 3:
-    print("Error Invalid argument length")
+    print("Please provide the correct format: client.py <Address> <Port_Number>")
     sys.exit(1)
 # The port on which to listen
 
