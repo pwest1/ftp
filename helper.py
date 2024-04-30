@@ -17,11 +17,10 @@ def recvAll(sock, numBytes):
             break
         # Add the received bytes to the buffer
         recvBuff += tmpBuff
-        print(recvBuff)
     return recvBuff
 
 def send_file_data(data_socket, filename="NA"):
-    file_obj = open(filename, "r")
+    file_obj = open(filename, "rb")
     # The number of bytes sent
     num_sent = 0
     # The file data
@@ -41,7 +40,7 @@ def send_file_data(data_socket, filename="NA"):
                 data_size_str = "0" + data_size_str
             # Prepend the size of the data to the
             # file data.
-            file_data = (data_size_str + file_data).encode()
+            file_data = (data_size_str + file_data.decode()).encode()
             # The number of bytes sent
             num_sent = 0
             # Send the data!
@@ -56,7 +55,7 @@ def send_file_data(data_socket, filename="NA"):
     file_obj.close()
 
 
-def rec_file_data(data_socket, filename="NA"):
+def rec_file_data(data_socket, filename="NA", save=True):
     fileData = ""
     # The temporary buffer to store the received
     # data.
@@ -73,11 +72,14 @@ def rec_file_data(data_socket, filename="NA"):
     print("The file size is ", fileSize)
     # Get the file data
     fileData = recvAll(data_socket, fileSize)
-    # if not filename == "NA":
-    #     with open(filename, "wb") as file:
-    #         file.write(fileData)
-    #else:
-    print("The file data is: ")
-    print(fileData)
+    if save:
+        # Save the file to the current directory with the specified filename
+        with open(filename, "wb") as file:
+            file.write(fileData.encode())
+    else:
+        # Print the file data
+        print("Directory: ")
+        print(fileData)
+
     # Close our side
     data_socket.close()
