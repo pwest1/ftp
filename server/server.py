@@ -4,7 +4,7 @@ import sys  # sys module for accessing cl arguments
 sys.path.append("..")
 import threading
 import os
-from helper import rec_file_data, recvAll, send_file_data
+from helper import rec_file_data, recvAll, send_file_data, status_check, send_status, rec_status
 
 
 def establish_data_connection(connection_socket):
@@ -29,22 +29,27 @@ def handle_client_connection(connectionSocket):
             break
         if command == 'get':
             filename = connectionSocket.recv(1024).decode()
-            dataSocket = establish_data_connection(connectionSocket)
-            send_file_data(dataSocket, filename)
+            data_socket = establish_data_connection(connectionSocket)
+            send_file_data(data_socket, filename)
+            rec_status(connectionSocket)
+
+
+
 
         elif command == 'put':
             filename = connectionSocket.recv(1024).decode()
-            dataSocket = establish_data_connection(connectionSocket)
-            rec_file_data(dataSocket, filename)
+            data_socket = establish_data_connection(connectionSocket)
+            status = rec_file_data(data_socket, filename)
+            send_status(connectionSocket, status)
+
 
 
         elif command == 'ls':
-            dataSocket = establish_data_connection(connectionSocket)
+            data_socket = establish_data_connection(connectionSocket)
             files = os.listdir()
             with open("file_list.txt", "w") as file:
                 file.write("\n".join(files))
-            #file_data = "\n".join(files).encode()
-            send_file_data(dataSocket, "file_list.txt")
+            send_file_data(data_socket, "file_list.txt")
             os.remove("file_list.txt")
 
         elif command == 'quit':

@@ -3,6 +3,27 @@ import sys
 import cmd
 import os
 
+
+def status_check(status):
+    if status:
+        print("File Transfer Success")
+    else:
+        print("File Transfer Failed")
+
+
+def send_status(control_socket, status):
+    control_socket.send(str(status).encode())
+    status_check(status)
+
+
+def rec_status(control_socket):
+    str_status = control_socket.recv(1024).decode()
+    if str_status == "True":
+       status_check(True)
+    else:
+        status_check(False)
+
+
 def recvAll(sock, numBytes):
     # The buffer
     recvBuff = b""
@@ -18,6 +39,7 @@ def recvAll(sock, numBytes):
         # Add the received bytes to the buffer
         recvBuff += tmpBuff
     return recvBuff
+
 
 def send_file_data(data_socket, filename="NA"):
     file_obj = open(filename, "rb")
@@ -56,6 +78,7 @@ def send_file_data(data_socket, filename="NA"):
 
 
 def rec_file_data(data_socket, filename="NA", save=True):
+    all_rec = False
     fileData = ""
     # The temporary buffer to store the received
     # data.
@@ -72,14 +95,16 @@ def rec_file_data(data_socket, filename="NA", save=True):
     print("The file size is ", fileSize)
     # Get the file data
     fileData = recvAll(data_socket, fileSize)
-    if save:
-        # Save the file to the current directory with the specified filename
-        with open(filename, "wb") as file:
-            file.write(fileData)
-    else:
-        # Print the file data
-        print("Directory: ")
-        print(fileData.decode())
-
+    if len(fileData) == fileSize:
+        all_rec = True
+        if save:
+            # Save the file to the current directory with the specified filename
+            with open(filename, "wb") as file:
+                file.write(fileData)
+        else:
+            # Print the file data
+            print("Directory: ")
+            print(fileData.decode())
     # Close our side
     data_socket.close()
+    return all_rec

@@ -3,7 +3,7 @@ from socket import *
 import sys
 sys.path.append("..")
 import cmd
-from helper import rec_file_data, recvAll, send_file_data
+from helper import rec_file_data, recvAll, send_file_data, status_check, send_status, rec_status
 import os
 
 
@@ -25,6 +25,7 @@ class FTP(cmd.Cmd):
             clientSocket.send(filename.encode())
             data_socket = establish_data_connection(clientSocket)
             send_file_data(data_socket, filename)
+            rec_status(clientSocket)
 
 
         else:
@@ -38,7 +39,9 @@ class FTP(cmd.Cmd):
             clientSocket.send(command.encode())
             clientSocket.send(filename.encode())
             data_socket = establish_data_connection(clientSocket)
-            rec_file_data(data_socket, filename)
+            status = rec_file_data(data_socket, filename)
+            send_status(clientSocket, status)
+
 
         else:
             print("Get Command requires file argument")
