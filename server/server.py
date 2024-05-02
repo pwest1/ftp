@@ -8,6 +8,15 @@ from helper import rec_file_data, recvAll, send_file_data, status_check, send_st
 
 
 def establish_data_connection(connection_socket):
+    """
+    Establishes a data connection with the client.
+
+    Parameters:
+        connection_socket (socket): A socket connected to the client.
+
+    Returns:
+        data_conn (socket): A new socket for data transmission.
+    """
     data_socket = socket(AF_INET, SOCK_STREAM)
     data_socket.bind(('', 0))
     data_socket.listen(1)
@@ -22,6 +31,12 @@ def establish_data_connection(connection_socket):
 # function to handle client connection
 
 def handle_client_connection(connectionSocket):
+    """
+    Handles client commands and data transfers.
+
+    Parameters:
+        connectionSocket (socket): A socket connected to the client.
+    """
     print("Connecting to client")
     while True:
         command = connectionSocket.recv(1024).decode()

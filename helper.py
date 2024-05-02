@@ -5,6 +5,12 @@ import os
 
 
 def status_check(status):
+    """
+    Checks the status of a file transfer and prints a corresponding message.
+
+    Parameters:
+        status (bool): The status of the file transfer. True if successful, False otherwise.
+    """
     if status:
         print("File Transfer Success")
     else:
@@ -12,11 +18,24 @@ def status_check(status):
 
 
 def send_status(control_socket, status):
+    """
+    Sends the status of a file transfer over a control socket and prints the status message.
+
+    Parameters:
+        control_socket (socket): The control socket used for communication.
+        status (bool): The status of the file transfer. True if successful, False otherwise.
+    """
     control_socket.send(str(status).encode())
     status_check(status)
 
 
 def rec_status(control_socket):
+    """
+    Receives the status of a file transfer from a control socket and prints the status message.
+
+    Parameters:
+        control_socket (socket): The control socket used for communication.
+    """
     str_status = control_socket.recv(1024).decode()
     if str_status == "True":
        status_check(True)
@@ -25,6 +44,16 @@ def rec_status(control_socket):
 
 
 def recvAll(sock, numBytes):
+    """
+    Receives a specified number of bytes from a socket.
+
+    Parameters:
+        sock (socket): The socket from which to receive data.
+        numBytes (int): The number of bytes to receive.
+
+    Returns:
+        recvBuff (bytes): The received bytes.
+    """
     # The buffer
     recvBuff = b""
     # The temporary buffer
@@ -42,6 +71,13 @@ def recvAll(sock, numBytes):
 
 
 def send_file_data(data_socket, filename="NA"):
+    """
+    Sends file data over a data socket.
+
+    Parameters:
+        data_socket (socket): The socket used for data transmission.
+        filename (str): The name of the file to send.
+    """
     file_obj = open(filename, "rb")
     # The number of bytes sent
     num_sent = 0
@@ -78,6 +114,17 @@ def send_file_data(data_socket, filename="NA"):
 
 
 def rec_file_data(data_socket, filename="NA", save=True):
+    """
+       Receives file data over a data socket.
+
+       Parameters:
+           data_socket (socket): The socket used for data transmission.
+           filename (str): The name of the file to save the received data.
+           save (bool): Whether to save the received data to a file.
+
+       Returns:
+           all_rec (bool): True if all data was received successfully, False otherwise.
+       """
     all_rec = False
     fileData = ""
     # The temporary buffer to store the received

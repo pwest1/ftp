@@ -1,13 +1,28 @@
 # ----------------------- Client code----------------------
 from socket import *
 import sys
+
 sys.path.append("..")
 import cmd
 from helper import rec_file_data, recvAll, send_file_data, status_check, send_status, rec_status
 import os
 
 
+
+
 def establish_data_connection(clientSocket):
+    """
+       Establishes a data connection with the server.
+
+       This function receives the data port number from the clientSocket,
+       creates a new socket (data_socket), and connects it to the server using the received port number.
+
+       Parameters:
+           clientSocket (socket): A socket connected to the server used for communication.
+
+       Returns:
+           data_socket (socket): A new socket connected to the server's data port for data transmission.
+    """
     data_port = int(clientSocket.recv(1024).decode())
     data_socket = socket(AF_INET, SOCK_STREAM)
     data_socket.connect((serverName, data_port))
@@ -16,8 +31,31 @@ def establish_data_connection(clientSocket):
 
 
 class FTP(cmd.Cmd):
-    # function to put file in server
+    """
+    Class: FTP
+
+    Description:
+        A command-line interface for interacting with an FTP server. Supports commands to upload ("put"),
+        download ("get"), list directory contents ("ls"), and quit the connection ("quit").
+
+    Methods:
+        do_put(self, args):
+            Uploads a file to the server. Requires a file argument.
+
+        do_get(self, args):
+            Downloads a file from the server. Requires a file argument.
+
+        do_ls(self, args):
+            Lists directory contents on the server. Does not take any arguments.
+
+        do_quit(self, args):
+            Closes the connection with the server and exits the FTP client.
+
+    """
     def do_put(self, args):
+        """
+        Uploads a file to the server. Requires a file argument.
+        """
         if len(args) > 0:
             command = "put"
             filename = args
@@ -27,12 +65,14 @@ class FTP(cmd.Cmd):
             send_file_data(data_socket, filename)
             rec_status(clientSocket)
 
-
         else:
             print("Put command requires file argument")
 
-    # functn to retrieve a file from the server
+    # function to retrieve a file from the server
     def do_get(self, args):
+        """
+        Downloads a file from the server. Requires a file argument.
+        """
         if len(args) > 0:
             command = "get"
             filename = args
@@ -47,6 +87,9 @@ class FTP(cmd.Cmd):
             print("Get Command requires file argument")
 
     def do_ls(self, args):
+        """
+        Lists directory contents on the server. Does not take any arguments.
+        """
         if not len(args) == 0:
             print('ls command does not take any arguments')
         else:
@@ -56,6 +99,9 @@ class FTP(cmd.Cmd):
             rec_file_data(data_socket, "ls", False)
 
     def do_quit(self, args):
+        """
+        Closes the connection with the server and exits the FTP client.
+        """
         data = "quit"
         clientSocket.send(data.encode())
         clientSocket.close()
@@ -63,10 +109,10 @@ class FTP(cmd.Cmd):
         return True
 
 
+#----------Main Client Code -------------------
 if len(sys.argv) != 3:
     print("Please provide the correct format: client.py <Address> <Port_Number>")
     sys.exit(1)
-# The port on which to listen
 
 # extract port number from comand-line arguments
 try:
@@ -75,8 +121,6 @@ try:
 except ValueError:
     print("Port number must be an integer")
     sys.exit(1)
-# Name and port number of the server to which want to connect.
-
 
 # Create a socket
 clientSocket = socket(AF_INET, SOCK_STREAM)
