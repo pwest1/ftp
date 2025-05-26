@@ -3,12 +3,6 @@
 ## Description
 TCP Client-Server File Transfer is a project implementing a client-server architecture for transferring files over sockets. It comprises two main components: a client and a server, communicating via a control channel and a data channel.
 
-## Students
-- Junhao Guo jguo1@csu.fullerton.edu
-- Nhi Danis Ndanis@csu.fullerton.edu
-- Alvaro Samayoa Alvaro.samayoa@csu.fullerton.edu
-- Peter West pwest1@csu.fullerton.edu
-- Steven Delgado sdelgado662@csu.fullerton.edu
 
 ## Programming Language
 Python
