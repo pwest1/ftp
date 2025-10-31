@@ -15,6 +15,7 @@ def status_check(status):
         print("File Transfer Success")
     else:
         print("File Transfer Failed")
+    return None
 
 
 def send_status(control_socket, status):
@@ -125,7 +126,7 @@ def rec_file_data(data_socket, filename="NA", save=True):
        Returns:
            all_rec (bool): True if all data was received successfully, False otherwise.
        """
-    all_rec = False
+    all_rec = "False"
     fileData = ""
     # The temporary buffer to store the received
     # data.
@@ -143,7 +144,7 @@ def rec_file_data(data_socket, filename="NA", save=True):
     # Get the file data
     fileData = recvAll(data_socket, fileSize)
     if len(fileData) == fileSize:
-        all_rec = True
+        all_rec = "True"
         if save:
             # Save the file to the current directory with the specified filename
             with open(filename, "wb") as file:
